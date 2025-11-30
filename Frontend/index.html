@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truth Dao Chronicles</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>🌑 Truth Dao</h2>
+            </div>
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item">
+                    <a href="#home" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contact" class="nav-link">Contact</a>
+                </li>
+            </ul>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <div class="hamburger" id="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Fake News Detection Section -->
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="shadow-particles"></div>
+        </div>
+        <div class="hero-content">
+            <div class="detection-container">
+                <div class="section-header">
+                    <h1 class="hero-title">
+                        <span class="title-line highlight">Truth Dao</span>
+                        <span class="title-line">Fake News Detector</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Enter a website URL to analyze and detect fake news using AI-powered detection
+                    </p>
+                </div>
+                <div class="detection-form-container">
+                    <form id="detection-form" class="detection-form">
+                        <div class="form-group">
+                            <label for="url-input">Website URL</label>
+                            <input 
+                                type="url" 
+                                id="url-input" 
+                                name="url" 
+                                placeholder="https://example.com/article" 
+                                required
+                                class="url-input"
+                            >
+                        </div>
+                        <button type="submit" class="btn btn-primary" data-text="Analyze News">
+                            <span>Analyze News</span>
+                        </button>
+                    </form>
+                </div>
+                <div id="result-container" class="result-container" style="display: none;">
+                    <div class="result-card">
+                        <h3 class="result-title">Analysis Result</h3>
+                        <div class="result-content">
+                            <div class="result-status">
+                                <span id="status-label" class="status-label"></span>
+                                <span id="status-value" class="status-value"></span>
+                            </div>
+                            <div class="result-accuracy">
+                                <span class="accuracy-label">Accuracy:</span>
+                                <span id="accuracy-value" class="accuracy-value"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Enter Truth Dao</h2>
+                <p class="section-subtitle">Begin your journey into the unknown</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-form">
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <label for="name">Shadow Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Realm Contact</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Your Destiny</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" data-text="Submit to Shadows">
+                            <span>Submit to Shadows</span>
+                        </button>
+                    </form>
+                </div>
+                <div class="contact-info">
+                    <div class="info-block">
+                        <h3>🌑 Truth Dao</h3>
+                        <p>Where reality bends to will</p>
+                    </div>
+                    <div class="info-block">
+                        <h3>⚡ Eternal Cycle</h3>
+                        <p>Death is but a new beginning</p>
+                    </div>
+                    <div class="info-block">
+                        <h3>🔮 Mysteries Await</h3>
+                        <p>Knowledge beyond mortal comprehension</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🌑 Truth Dao Chronicles</h3>
+                    <p>A journey through darkness and light, where every choice shapes destiny.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">🌑</a>
+                        <a href="#" class="social-link">⚔️</a>
+                        <a href="#" class="social-link">🔮</a>
+                        <a href="#" class="social-link">👁️</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Truth Dao Chronicles. All rights reserved in the eternal cycle.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
