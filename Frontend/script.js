@@ -25,18 +25,18 @@ function initializeTheme() {
     const savedTheme = localStorage.getItem('theme');
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     const theme = savedTheme || systemTheme;
-    
+
     // Set the theme attribute on the document element
     document.documentElement.setAttribute('data-theme', theme);
     updateThemeIcon(theme);
-    
+
     // Set initial navbar background based on theme
     if (theme === 'light') {
         navbar.style.background = 'rgba(248, 250, 252, 0.95)';
     } else {
         navbar.style.background = 'rgba(10, 10, 15, 0.95)';
     }
-    
+
     // Force a reflow to ensure the theme is applied
     document.documentElement.offsetHeight;
 }
@@ -50,14 +50,14 @@ function updateThemeIcon(theme) {
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
+
     console.log('Switching theme from', currentTheme, 'to', newTheme);
-    
+
     // Set the new theme
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
     updateThemeIcon(newTheme);
-    
+
     // Update navbar background based on scroll position and new theme
     const scrollY = window.scrollY;
     if (scrollY > 100) {
@@ -73,13 +73,13 @@ function toggleTheme() {
             navbar.style.background = 'rgba(10, 10, 15, 0.95)';
         }
     }
-    
+
     // Add transition effect
     document.body.style.transition = 'all 0.3s ease';
     setTimeout(() => {
         document.body.style.transition = '';
     }, 300);
-    
+
     // Force a reflow to ensure the theme is applied
     document.documentElement.offsetHeight;
 }
@@ -92,7 +92,7 @@ function toggleTheme() {
 function toggleMobileMenu() {
     navMenu.classList.toggle('active');
     hamburger.classList.toggle('active');
-    
+
     // Animate hamburger bars
     const bars = hamburger.querySelectorAll('.bar');
     bars.forEach((bar, index) => {
@@ -111,7 +111,7 @@ function toggleMobileMenu() {
 function closeMobileMenu() {
     navMenu.classList.remove('active');
     hamburger.classList.remove('active');
-    
+
     const bars = hamburger.querySelectorAll('.bar');
     bars.forEach(bar => {
         bar.style.transform = '';
@@ -152,7 +152,7 @@ const observer = new IntersectionObserver((entries) => {
 // Add fade-in animation to elements
 function addScrollAnimations() {
     const animatedElements = document.querySelectorAll('.text-block, .feature-card, .info-block, .section-header');
-    
+
     animatedElements.forEach(element => {
         element.classList.add('fade-in');
         observer.observe(element);
@@ -163,7 +163,7 @@ function addScrollAnimations() {
 function handleNavbarScroll() {
     const scrollY = window.scrollY;
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-    
+
     if (scrollY > 100) {
         if (currentTheme === 'light') {
             navbar.style.background = 'rgba(248, 250, 252, 0.98)';
@@ -188,21 +188,21 @@ function handleNavbarScroll() {
 // Enhanced button hover effects
 function addButtonEffects() {
     const buttons = document.querySelectorAll('.btn');
-    
+
     buttons.forEach(button => {
-        button.addEventListener('mouseenter', function() {
+        button.addEventListener('mouseenter', function () {
             this.style.transform = 'translateY(-2px) scale(1.02)';
         });
-        
-        button.addEventListener('mouseleave', function() {
+
+        button.addEventListener('mouseleave', function () {
             this.style.transform = 'translateY(0) scale(1)';
         });
-        
-        button.addEventListener('mousedown', function() {
+
+        button.addEventListener('mousedown', function () {
             this.style.transform = 'translateY(0) scale(0.98)';
         });
-        
-        button.addEventListener('mouseup', function() {
+
+        button.addEventListener('mouseup', function () {
             this.style.transform = 'translateY(-2px) scale(1.02)';
         });
     });
@@ -215,20 +215,20 @@ function addButtonEffects() {
 // Add interactive effects to feature cards
 function addFeatureCardEffects() {
     const featureCards = document.querySelectorAll('.feature-card');
-    
+
     featureCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
+        card.addEventListener('mouseenter', function () {
             this.style.transform = 'translateY(-10px) scale(1.02)';
             this.style.boxShadow = '0 20px 40px rgba(99, 102, 241, 0.3)';
         });
-        
-        card.addEventListener('mouseleave', function() {
+
+        card.addEventListener('mouseleave', function () {
             this.style.transform = 'translateY(0) scale(1)';
             this.style.boxShadow = '';
         });
-        
+
         // Add click effect
-        card.addEventListener('click', function() {
+        card.addEventListener('click', function () {
             this.style.transform = 'translateY(-5px) scale(1.01)';
             setTimeout(() => {
                 this.style.transform = 'translateY(-10px) scale(1.02)';
@@ -244,52 +244,54 @@ function addFeatureCardEffects() {
 // Handle fake news detection form submission
 function handleDetectionForm(e) {
     e.preventDefault();
-    
+
     const urlInput = document.getElementById('url-input');
     const url = urlInput.value.trim();
-    
+
     if (!url) {
         showNotification('Please enter a valid URL', 'error');
         return;
     }
-    
+
     // Show loading state
     const submitButton = detectionForm.querySelector('button[type="submit"]');
     const originalText = submitButton.querySelector('span').textContent;
     submitButton.querySelector('span').textContent = 'Analyzing...';
     submitButton.disabled = true;
-    
+
     // Hide previous results
     resultContainer.style.display = 'none';
-    
-    // Simulate API call (mock function - replace with actual API call when backend is ready)
-    setTimeout(() => {
-        // Mock detection result
-        // In real implementation, this would be an API call to your backend
-        const mockResult = simulateDetection(url);
-        
-        // Display results
-        displayDetectionResult(mockResult);
-        
-        // Reset button
-        submitButton.querySelector('span').textContent = originalText;
-        submitButton.disabled = false;
-    }, 2000);
+
+    // API Call
+    fetch("http://localhost:5000/api/analyze", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ url })
+    })
+        .then(res => res.json())
+        .then(response => {
+            if (!response.success) {
+                throw new Error("Analysis failed");
+            }
+
+            displayDetectionResult({
+                status: response.data.status,
+                accuracy: response.data.accuracy
+            });
+        })
+        .catch(err => {
+            showNotification("Failed to analyze news", "error");
+            console.error(err);
+        })
+        .finally(() => {
+            submitButton.querySelector('span').textContent = originalText;
+            submitButton.disabled = false;
+        });
+
 }
 
-// Simulate fake news detection (mock function)
-// Replace this with actual API call when backend is ready
-function simulateDetection(url) {
-    // Mock logic - randomly generates results for demonstration
-    // In production, this should call your backend API
-    const isFake = Math.random() > 0.5;
-    const accuracy = (Math.random() * 30 + 70).toFixed(1); // Random accuracy between 70-100%
-    
-    return {
-        status: isFake ? 'FAKE' : 'REAL',
-        accuracy: accuracy + '%'
-    };
-}
 
 // Display detection results
 function displayDetectionResult(result) {
@@ -297,43 +299,43 @@ function displayDetectionResult(result) {
     statusValue.textContent = result.status;
     statusValue.className = 'status-value ' + result.status.toLowerCase();
     accuracyValue.textContent = result.accuracy;
-    
+
     // Show result container with animation
     resultContainer.style.display = 'block';
     resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    
+
     showNotification(`Analysis complete! Result: ${result.status}`, 'success');
 }
 
 // Handle contact form submission
 function handleFormSubmission(e) {
     e.preventDefault();
-    
+
     const formData = new FormData(contactForm);
     const name = formData.get('name');
     const email = formData.get('email');
     const message = formData.get('message');
-    
+
     // Simulate form submission with animation
     const submitButton = contactForm.querySelector('button[type="submit"]');
     const originalText = submitButton.textContent;
-    
+
     submitButton.textContent = 'Submitting to Shadows...';
     submitButton.disabled = true;
-    
+
     // Add loading animation
     submitButton.style.background = 'linear-gradient(135deg, #6366f1, #3b82f6)';
     submitButton.style.animation = 'pulse 1s ease-in-out infinite';
-    
+
     setTimeout(() => {
         // Reset button
         submitButton.textContent = originalText;
         submitButton.disabled = false;
         submitButton.style.animation = '';
-        
+
         // Show success message
         showNotification('Your destiny has been submitted to the shadows!', 'success');
-        
+
         // Reset form
         contactForm.reset();
     }, 2000);
@@ -348,7 +350,7 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
-    
+
     // Style the notification
     let bgColor = 'var(--shadow-purple)';
     if (type === 'success') {
@@ -356,7 +358,7 @@ function showNotification(message, type = 'info') {
     } else if (type === 'error') {
         bgColor = 'var(--crimson)';
     }
-    
+
     notification.style.cssText = `
         position: fixed;
         top: 100px;
@@ -372,14 +374,14 @@ function showNotification(message, type = 'info') {
         font-weight: 600;
         max-width: 300px;
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     // Animate in
     setTimeout(() => {
         notification.style.transform = 'translateX(0)';
     }, 100);
-    
+
     // Remove after delay
     setTimeout(() => {
         notification.style.transform = 'translateX(400px)';
@@ -407,9 +409,9 @@ function createParticleEffect() {
         pointer-events: none;
         z-index: 1;
     `;
-    
+
     heroSection.appendChild(particleContainer);
-    
+
     // Create particles
     for (let i = 0; i < 20; i++) {
         createParticle(particleContainer);
@@ -427,11 +429,11 @@ function createParticle(container) {
         opacity: 0.6;
         animation: float ${Math.random() * 10 + 10}s linear infinite;
     `;
-    
+
     particle.style.left = Math.random() * 100 + '%';
     particle.style.top = Math.random() * 100 + '%';
     particle.style.animationDelay = Math.random() * 10 + 's';
-    
+
     container.appendChild(particle);
 }
 
@@ -445,7 +447,7 @@ function handleKeyboardNavigation(e) {
     if (e.key === 'Escape' && navMenu.classList.contains('active')) {
         closeMobileMenu();
     }
-    
+
     // Space/Enter on theme toggle
     if ((e.key === ' ' || e.key === 'Enter') && e.target === themeToggle) {
         e.preventDefault();
@@ -460,7 +462,7 @@ function handleKeyboardNavigation(e) {
 // Throttle scroll events for better performance
 function throttle(func, limit) {
     let inThrottle;
-    return function() {
+    return function () {
         const args = arguments;
         const context = this;
         if (!inThrottle) {
@@ -476,29 +478,29 @@ function throttle(func, limit) {
 // ========================================
 
 // Initialize all functionality when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize theme
     initializeTheme();
-    
+
     // Set navbar background based on initial scroll position
     handleNavbarScroll();
-    
+
     // Add scroll animations
     addScrollAnimations();
-    
+
     // Add button effects
     addButtonEffects();
-    
+
     // Add feature card effects
     addFeatureCardEffects();
-    
+
     // Create particle effects
     createParticleEffect();
-    
+
     // Event listeners
     themeToggle.addEventListener('click', toggleTheme);
     hamburger.addEventListener('click', toggleMobileMenu);
-    
+
     // Close mobile menu when clicking on links
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
@@ -509,30 +511,30 @@ document.addEventListener('DOMContentLoaded', function() {
             closeMobileMenu();
         });
     });
-    
+
     // Form submission
     if (contactForm) {
         contactForm.addEventListener('submit', handleFormSubmission);
     }
-    
+
     // Detection form submission
     if (detectionForm) {
         detectionForm.addEventListener('submit', handleDetectionForm);
     }
-    
+
     // Scroll events
     window.addEventListener('scroll', throttle(handleNavbarScroll, 16));
-    
+
     // Keyboard navigation
     document.addEventListener('keydown', handleKeyboardNavigation);
-    
+
     // Handle window resize
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768) {
             closeMobileMenu();
         }
     });
-    
+
     // Add CSS animation keyframes dynamically
     const style = document.createElement('style');
     style.textContent = `
@@ -570,7 +572,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
-    
+
     console.log('🌑 Truth Dao Chronicles initialized successfully!');
 });
 
@@ -608,7 +610,7 @@ function addLoadingState(button, text = 'Loading...') {
     button.textContent = text;
     button.disabled = true;
     button.style.opacity = '0.7';
-    
+
     return () => {
         button.textContent = originalText;
         button.disabled = false;
