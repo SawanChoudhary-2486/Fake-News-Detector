@@ -1,16 +1,14 @@
 const Analysis = require("../models/Analysis");
+const { getPredictionFromML } = require("../services/ml.service");
 
 exports.analyzeNews = async (req, res) => {
   try {
     const { url } = req.body;
 
-    // Temporary dummy result (ML comes later)
-    const result = {
-      status: "REAL",
-      accuracy: "92.5%"
-    };
+    // 🔮 Call Python ML service
+    const result = await getPredictionFromML(url);
 
-    // Save to MongoDB
+    // 💾 Save result to MongoDB
     const savedAnalysis = await Analysis.create({
       url,
       status: result.status,
@@ -28,10 +26,10 @@ exports.analyzeNews = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("ML or DB error:", error.message);
     res.status(500).json({
       success: false,
-      message: "Failed to save analysis"
+      message: "Failed to analyze news"
     });
   }
 };
