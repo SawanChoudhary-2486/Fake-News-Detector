@@ -87,7 +87,7 @@ Create a `.env` file inside the `Backend/` directory:
 
 ```
 PORT=5000
-MONGO_URI=mongodb://127.0.0.1:27017/fake_news_db?directConnection=true
+MONGO_URI=mongodb://127.0.0.1:27017/fake_news_db
 ```
 
 ---
@@ -99,9 +99,9 @@ MONGO_URI=mongodb://127.0.0.1:27017/fake_news_db?directConnection=true
 ```bash
 docker run -d \
   --name mongo-fake-news \
-  -p 27017:27017 \
-  mongo:6.0 \
-  --bind_ip 0.0.0.0
+  --network host \
+  mongo:6.0
+
 ```
 
 Verify:
@@ -184,6 +184,12 @@ After restarting the system or laptop:
 docker start mongo-fake-news
 cd Backend
 npm start
+
+```
+```bash1
+cd "Fake News Detector/Backend/ml-service"
+source venv/bin/activate
+uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
 That’s it. The system works without rebuilding or reconfiguration.
@@ -231,4 +237,3 @@ Fake News Detector
 
 This project demonstrates a complete, working Fake News Detection pipeline that can be reliably tested, restarted, and evaluated with minimal setup.
 
-If it runs after reboot, it runs in the viva. ✅

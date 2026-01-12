@@ -18,9 +18,9 @@ docker rm mongo-fake-news
 # Start MongoDB container
 docker run -d \
   --name mongo-fake-news \
-  -p 27017:27017 \
-  mongo:6.0 \
-  --bind_ip 0.0.0.0
+  --network host \
+  mongo:6.0
+
 
 # Optional: verify Mongo is running
 docker ps
@@ -30,7 +30,7 @@ docker ps
 2️⃣ START ML SERVICE (FASTAPI)
 --------------------------------
 
-cd /Fake\ News\ Detector/Backend/ml-service
+cd "Fake News Detector/Backend/ml-service"
 
 # Activate virtual environment
 source venv/bin/activate
