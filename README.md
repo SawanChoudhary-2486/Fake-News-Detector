@@ -196,6 +196,16 @@ That’s it. The system works without rebuilding or reconfiguration.
 
 ---
 
+## Troubleshooting
+
+> **Note:** On some Linux systems, Docker bridge networking may fail after a system reboot, causing MongoDB connection timeouts.
+>
+> To ensure reliable local development, MongoDB is run using Docker’s **host network mode**:
+>
+> ```bash
+> docker run -d --name mongo-fake-news --network host mongo:6.0
+> ```
+
 ## 📌 Key Features
 
 * Fake vs Real classification
