@@ -1,0 +1,90 @@
+==============================
+FAKE NEWS DETECTOR – STARTUP GUIDE
+==============================
+
+IMPORTANT:
+- Open EACH section in a SEPARATE terminal
+- Start services in the ORDER given
+- Do NOT close the terminals while running
+
+--------------------------------
+1️⃣ START MONGODB (DATABASE)
+--------------------------------
+
+# Stop any old Mongo container (safe to ignore errors)
+docker stop mongo-fake-news
+docker rm mongo-fake-news
+
+# Start MongoDB container
+docker run -d \
+  --name mongo-fake-news \
+  -p 27017:27017 \
+  mongo:6.0 \
+  --bind_ip 0.0.0.0
+
+# Optional: verify Mongo is running
+docker ps
+
+
+--------------------------------
+2️⃣ START ML SERVICE (FASTAPI)
+--------------------------------
+
+cd /Fake\ News\ Detector/Backend/ml-service
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Start ML API
+uvicorn app:app --host 0.0.0.0 --port 8000
+
+# ML test (run in another terminal):
+curl -X POST http://localhost:8000/predict \
+   -H "Content-Type: application/json" \
+   -d '{"url":"https://example.com"}'
+
+
+--------------------------------
+3️⃣ START BACKEND (NODE + EXPRESS)
+--------------------------------
+
+cd ~/Fake\ News\ Detector/Backend
+
+# Start backend server
+npm start
+
+# Backend test:
+# curl -X POST http://localhost:5000/api/analyze \
+#   -H "Content-Type: application/json" \
+#   -d '{"url":"https://example.com"}'
+
+
+--------------------------------
+4️⃣ VERIFY DATA IN MONGODB
+--------------------------------
+
+docker exec -it mongo-fake-news mongosh
+
+use fake_news_db
+db.analyses.find().pretty()
+
+
+--------------------------------
+EXPECTED RESULT
+--------------------------------
+✔ Backend running on http://localhost:5000
+✔ ML running on http://localhost:8000
+✔ MongoDB connected
+✔ Analysis stored in database
+
+--------------------------------
+SHUTDOWN (OPTIONAL)
+--------------------------------
+
+# Stop backend: CTRL + C
+# Stop ML service: CTRL + C
+docker stop mongo-fake-news
+
+==============================
+END
+==============================
