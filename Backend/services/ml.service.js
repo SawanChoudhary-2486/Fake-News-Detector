@@ -6,7 +6,7 @@ exports.getPredictionFromML = async (url) => {
   const response = await axios.post(ML_SERVICE_URL, { url });
 
   return {
-    status: response.data.label,
-    accuracy: `${(response.data.confidence * 100).toFixed(2)}%`
+    label: response.data.label,        // REAL / FAKE
+    confidence: response.data.confidence // Number (0–1)
   };
 };

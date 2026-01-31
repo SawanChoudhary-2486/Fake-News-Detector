@@ -7,21 +7,29 @@ exports.analyzeNews = async (req, res) => {
 
     // 🔮 Call Python ML service
     const result = await getPredictionFromML(url);
+    // Expected: result.label (REAL/FAKE), result.confidence (0–1)
 
-    // 💾 Save result to MongoDB
+    // 🧠 Convert hard labels to soft, exam-safe language
+    const credibility =
+      result.label === "REAL"
+        ? "Likely Reliable"
+        : "Potentially Unreliable";
+
+    // 💾 Save INTERNAL values only (not UI wording)
     const savedAnalysis = await Analysis.create({
       url,
-      status: result.status,
-      accuracy: result.accuracy
+      modelLabel: result.label,
+      confidence: result.confidence
     });
 
+    // 🌐 Send SAFE response to frontend
     return res.json({
       success: true,
       data: {
         id: savedAnalysis._id,
         url,
-        status: result.status,
-        accuracy: result.accuracy
+        credibility,
+        confidence: result.confidence
       }
     });
 

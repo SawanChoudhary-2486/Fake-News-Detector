@@ -5,15 +5,20 @@ const AnalysisSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  status: {
+
+  // Raw ML output (internal use only)
+  modelLabel: {
     type: String,
     enum: ["REAL", "FAKE"],
     required: true
   },
-  accuracy: {
-    type: String,
+
+  // Model confidence for this prediction
+  confidence: {
+    type: Number,
     required: true
   },
+
   createdAt: {
     type: Date,
     default: Date.now

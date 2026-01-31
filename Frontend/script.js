@@ -272,15 +272,17 @@ function handleDetectionForm(e) {
     })
         .then(res => res.json())
         .then(response => {
+            console.log("FULL API RESPONSE:", response);
+
             if (!response.success) {
                 throw new Error("Analysis failed");
             }
 
-            displayDetectionResult({
-                status: response.data.status,
-                accuracy: response.data.accuracy
-            });
+            console.log("RESPONSE.DATA:", response.data);
+
+            displayDetectionResult(response.data);
         })
+
         .catch(err => {
             showNotification("Failed to analyze news", "error");
             console.error(err);
@@ -295,17 +297,52 @@ function handleDetectionForm(e) {
 
 // Display detection results
 function displayDetectionResult(result) {
-    statusLabel.textContent = 'Status';
-    statusValue.textContent = result.status;
-    statusValue.className = 'status-value ' + result.status.toLowerCase();
-    accuracyValue.textContent = result.accuracy;
+    // Validate expected fields
+    if (!result || !result.credibility || typeof result.confidence !== "number") {
+        showNotification("Incomplete analysis result", "error");
+        return;
+    }
 
-    // Show result container with animation
-    resultContainer.style.display = 'block';
-    resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // Populate UI
+    statusLabel.textContent = "Credibility Assessment";
+    statusValue.textContent = result.credibility;
 
-    showNotification(`Analysis complete! Result: ${result.status}`, 'success');
+    // Apply semantic styling
+    const credibilityText = result.credibility.toLowerCase();
+
+let credibilityClass = "likely-real";
+
+// Check negative meaning FIRST
+if (
+    credibilityText.includes("unreliable") ||
+    credibilityText.includes("fake") ||
+    credibilityText.includes("false")
+) {
+    credibilityClass = "likely-fake";
 }
+
+statusValue.className = `status-value ${credibilityClass}`;
+
+
+    accuracyValue.textContent =
+        `${(result.confidence * 100).toFixed(2)}%`;
+
+    // Show result card
+    resultContainer.style.display = "block";
+    resultContainer.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    // Optional success feedback
+    showNotification(
+        `Analysis complete: ${result.credibility}`,
+        "success"
+    );
+}
+
+
+
 
 // Handle contact form submission
 function handleFormSubmission(e) {

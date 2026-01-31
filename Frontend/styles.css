@@ -1,6 +1,5 @@
 /* ========================================
    Truth Dao Chronicles - CSS Styles
-   Dark Fantasy Theme Inspired by Shadow Slave, RI, LOTM, Re:Zero
    ======================================== */
 
 /* CSS Variables for Theme Management */
@@ -561,6 +560,18 @@ p {
   background: var(--secondary-bg);
   border-radius: var(--border-radius);
 }
+
+/* Credibility result styling */
+.status-value.likely-real {
+    color: #22c55e;        /* green */
+    font-weight: 700;
+}
+
+.status-value.likely-fake {
+    color: #ef4444;        /* red */
+    font-weight: 700;
+}
+
 
 .accuracy-label {
   font-size: 1.1rem;
