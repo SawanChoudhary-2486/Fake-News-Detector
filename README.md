@@ -97,6 +97,7 @@ MONGO_URI=mongodb://127.0.0.1:27017/fake_news_db
 ### 1️⃣ Start MongoDB (Docker)
 
 ```bash
+
 docker run -d \
   --name mongo-fake-news \
   --network host \
@@ -176,7 +177,7 @@ curl -X POST http://localhost:5000/api/analyze \
 
 ---
 
-## 🔁 Demonstration After Shutdown (Important for Evaluation)
+## 🔁 Demonstration After the Services are created
 
 After restarting the system or laptop:
 
