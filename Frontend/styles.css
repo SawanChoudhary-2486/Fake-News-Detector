@@ -572,6 +572,11 @@ p {
     font-weight: 700;
 }
 
+.status-value.needs-verification {
+  color: #f59e0b;
+  font-weight: 700;
+}
+
 
 .accuracy-label {
   font-size: 1.1rem;

@@ -310,18 +310,22 @@ function displayDetectionResult(result) {
     // Apply semantic styling
     const credibilityText = result.credibility.toLowerCase();
 
-let credibilityClass = "likely-real";
+    let credibilityClass = "likely-real";
 
-// Check negative meaning FIRST
-if (
-    credibilityText.includes("unreliable") ||
-    credibilityText.includes("fake") ||
-    credibilityText.includes("false")
-) {
-    credibilityClass = "likely-fake";
-}
+    if (
+        credibilityText.includes("unreliable") ||
+        credibilityText.includes("fake") ||
+        credibilityText.includes("false")
+    ) {
+        credibilityClass = "likely-fake";
+    }
+    else if (
+        credibilityText.includes("verification")
+    ) {
+        credibilityClass = "needs-verification";
+    }
 
-statusValue.className = `status-value ${credibilityClass}`;
+    statusValue.className = `status-value ${credibilityClass}`;
 
 
     accuracyValue.textContent =
@@ -335,9 +339,22 @@ statusValue.className = `status-value ${credibilityClass}`;
     });
 
     // Optional success feedback
+    let notificationType = "success";
+
+    if (
+        result.credibility === "Potentially Unreliable"
+    ) {
+        notificationType = "error";
+    }
+    else if (
+        result.credibility === "Needs Verification"
+    ) {
+        notificationType = "info";
+    }
+
     showNotification(
         `Analysis complete: ${result.credibility}`,
-        "success"
+        notificationType
     );
 }
 

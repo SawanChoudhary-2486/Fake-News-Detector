@@ -1,0 +1,5 @@
+Model	Type
+
+BERT	facebook/bart-large-mnli
+RoBERTa	    FacebookAI/roberta-large-mnli
+DeBERTa	    MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli

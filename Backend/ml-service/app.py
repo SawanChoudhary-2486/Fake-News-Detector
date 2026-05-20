@@ -4,24 +4,31 @@ from bs4 import BeautifulSoup
 
 from model import predict
 
+from newspaper import Article
+
 app = FastAPI(title="Fake News Detection ML Service")
 
 def extract_text_from_url(url: str) -> str:
     try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
+        print(f"\n🔗 Fetching URL: {url}")
 
-        soup = BeautifulSoup(response.text, "lxml")
+        article = Article(url)
 
-        paragraphs = soup.find_all("p")
-        text = " ".join(p.get_text() for p in paragraphs)
+        article.download()
+        article.parse()
+
+        text = article.text
+
+        print(f"📄 Extracted Text Length: {len(text)}")
+        print(f"📄 First 500 chars:\n{text[:500]}")
 
         if len(text.strip()) < 100:
-            raise ValueError("Not enough text extracted")
+            raise ValueError("Not enough article text extracted")
 
         return text
 
     except Exception as e:
+        print(f"❌ Extraction Error: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
 
 

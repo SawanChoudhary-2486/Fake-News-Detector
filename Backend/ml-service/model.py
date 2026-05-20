@@ -1,31 +1,48 @@
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import pipeline
 import torch
 
-MODEL_NAME = "jy46604790/Fake-News-Bert-Detect"
+MODEL_NAME = "facebook/bart-large-mnli"
+print(f"\n🔥 Loading model: {MODEL_NAME}\n")
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME)
+device = 0 if torch.cuda.is_available() else -1
 
-model.eval()
+print(f"\nUsing device: {'GPU' if device == 0 else 'CPU'}\n")
+
+classifier = pipeline(
+    "zero-shot-classification",
+    model=MODEL_NAME,
+    device=device
+)
+
+print("\n===== PIPELINE INFO =====")
+print("Pipeline task:", classifier.task)
+print("Model class:", classifier.model.__class__.__name__)
+print("Model name:", classifier.model.config._name_or_path)
+print("=========================\n")
+
+CANDIDATE_LABELS = [
+    "credible news report",
+    "misleading or unreliable news"
+]
+
 
 def predict(text: str):
-    inputs = tokenizer(
-        text,
-        return_tensors="pt",
-        truncation=True,
-        padding=True,
-        max_length=512
+
+    result = classifier(
+        text[:2000],  # limit huge articles
+        CANDIDATE_LABELS,
+        multi_label=False
     )
 
-    with torch.no_grad():
-        outputs = model(**inputs)
+    top_label = result["labels"][0]
+    confidence = result["scores"][0]
 
-    probs = torch.softmax(outputs.logits, dim=1)
-    confidence, predicted_class = torch.max(probs, dim=1)
-
-    label = "FAKE" if predicted_class.item() == 1 else "REAL"
+    if top_label == "credible news report":
+        label = "REAL"
+    else:
+        label = "FAKE"
 
     return {
         "label": label,
-        "confidence": round(confidence.item(), 4)
+        "confidence": round(confidence, 4)
     }

@@ -9,11 +9,16 @@ exports.analyzeNews = async (req, res) => {
     const result = await getPredictionFromML(url);
     // Expected: result.label (REAL/FAKE), result.confidence (0–1)
 
-    // 🧠 Convert hard labels to soft, exam-safe language
-    const credibility =
-      result.label === "REAL"
-        ? "Likely Reliable"
-        : "Potentially Unreliable";
+    // 🧠 Convert hard labels to soft
+    let credibility;
+
+    if (result.confidence < 0.75) {
+      credibility = "Needs Verification";
+    } else if (result.label === "REAL") {
+      credibility = "Likely Reliable";
+    } else {
+      credibility = "Potentially Unreliable";
+    }
 
     // 💾 Save INTERNAL values only (not UI wording)
     const savedAnalysis = await Analysis.create({
@@ -37,7 +42,7 @@ exports.analyzeNews = async (req, res) => {
     console.error("ML or DB error:", error.message);
     res.status(500).json({
       success: false,
-      message: "Failed to analyze news"
+      message: error.response?.data?.detail || error.message
     });
   }
 };
